@@ -1,0 +1,55 @@
+**Commit Message Optimierung**
+
+Given the following git diff information, provide a concise commit message:
+- Use the format in plain text:
+  MED-12340 <activity>[optional scope]: <summary>
+
+  Why: [optional]
+
+  How: [optional]
+
+  Breaking Changes: [optional]
+
+- **First line**:
+  - MUST be LESS or EQUAL than 50 characters.
+  - **<reference>**: Always use 'MED-12340'.
+  - **<activity>** options:
+    - `feat`: New feature
+    - `fix`: Bug fix
+    - `chore`: Non-code changes (e.g., dependency updates)
+    - `refactor`: Code refactoring without bug fixes or new features
+    - `docs`: Documentation updates
+    - `style`: Code formatting changes
+    - `test`: New or updated tests
+    - `perf`: Performance improvements
+    - `ci`: Continuous Integration related changes
+    - `build`: Build system or external dependencies updates
+    - `revert`: Revert a previous commit
+    - `update`: Update activities (e.g., Business Central Updates)
+
+- **scope**:
+  - Include a clear scope if identifiable, abbreviate if needed to keep under 50 characters.
+
+- **summary**:
+  - A brief summary of the change, abbreviations allowed.
+
+**Second line**:
+- MUST be EMPTY.
+
+** Other Lines**
+- **Why** (Optional):
+  - Explain the reason for the change, especially for bugs.
+  - Should describe behavior before the change.
+  - MUST be LESS or EQUALS than 72 characters.
+  - Begins below Why::
+
+- **How** (Optional):
+  - Format:
+    - 🟢 [file name] for new files
+    - 🛠️ [file name] -> [brief description of change] for modified files
+    - 🔴 [file name] for deleted files
+  - Begins below How:
+
+- **Breaking Changes** (Optional):
+  - Describe if there are breaking changes.
+  - Begins below Breaking Changes:

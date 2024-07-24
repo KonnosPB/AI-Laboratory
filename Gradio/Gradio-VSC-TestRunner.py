@@ -17,7 +17,7 @@ def load_file_into_history(file_path):
             filecontent = file.read()
             file_name, file_extension = os.path.splitext(file_path)
             display_name = os.path.basename(file_path)
-            print(f"Loading {filecontent}")
+            print(f"Loading {file_path}")
             if file_extension == ".ts":
                 grhistory.append([f"{display_name}\n---\n``` typescript\n{filecontent}\n```", "Ok."])
             elif file_extension == ".json":

@@ -84,10 +84,34 @@ def load_history():
     return grhistory
 
 llm = AzureOpenAI(azure_deployment='gpt-4o')
-chatbot = gr.Chatbot(value=grhistory, height="100%", min_width="100%", render_markdown=True, bubble_full_width=True, show_copy_button=True)
 
-with gr.Blocks() as demo:
+custom_css = """
+<style>
+    .chatbot-bubble {
+        max-width: 100%;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+</style>
+"""
+
+head_style = """
+<style>
+@media (min-width: 1536px)
+{
+    .gradio-container {
+        min-width: var(--size-full) !important;
+    }
+}
+</style>
+"""
+
+chatbot = gr.Chatbot(value=grhistory, height="100%", min_width="100%", render_markdown=True, bubble_full_width=True, show_copy_button=True, elem_classes="chatbot-bubble")
+
+with gr.Blocks(head=head_style) as demo:
     gr.Markdown("# Development Bot")
+    gr.HTML(custom_css)  # Add custom CSS here
     chatbot.render()    
     with gr.Row():
         save_button = gr.Button("Save Chat History")

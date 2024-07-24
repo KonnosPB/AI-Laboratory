@@ -17,7 +17,7 @@ def load_file_into_history(file_path):
             filecontent = file.read()
             file_name, file_extension = os.path.splitext(file_path)
             display_name = os.path.basename(file_path)
-            print(f"#file extension: {file_extension}")
+            print(f"Loading {filecontent}")
             if file_extension == ".ts":
                 grhistory.append([f"{display_name}\n---\n``` typescript\n{filecontent}\n```", "Ok."])
             elif file_extension == ".json":
@@ -40,6 +40,8 @@ load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner
 load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/testRunner.ts')
 load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/testViewProviders.ts')
 load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/extension.ts')
+load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/logger.ts')
+load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/test/extension.test.ts')
 
 # Function to convert Gradio history to Azure OpenAI messages format
 def gradio_history_to_azure_openai_messages(gradio_history):

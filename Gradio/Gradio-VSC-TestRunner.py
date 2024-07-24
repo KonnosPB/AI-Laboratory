@@ -12,18 +12,19 @@ grhistory = []
 def load_file_into_history(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:        
         filecontent =  file.read()
-        file_name, file_extension = os.path.splitext(file_path)   
+        file_name, file_extension = os.path.splitext(file_path)  
+        display_name = os.path.basename(file_path) 
         print(f"#file extension: {file_extension}")     
         if file_extension == ".ts":
-            grhistory.append([f"``` typescript\n{filecontent}\n```", "Ok."])
+            grhistory.append([f"{display_name}\n---\n``` typescript\n{filecontent}\n```", "Ok."])
         elif file_extension == ".json":
-            grhistory.append([f"``` json\n{filecontent}\n```", "Ok."])
+            grhistory.append([f"{display_name}\n---\n``` json\n{filecontent}\n```", "Ok."])
         elif file_extension == ".xml":
-            grhistory.append([f"``` xml\n{filecontent}\n```", "Ok."])
+            grhistory.append([f"{display_name}\n---\n``` xml\n{filecontent}\n```", "Ok."])
         elif file_extension == ".ps1":
-            grhistory.append([f"``` powershell\n{filecontent}\n```", "Ok."])
+            grhistory.append([f"{display_name}\n---\n``` powershell\n{filecontent}\n```", "Ok."])
         else:
-            grhistory.append([filecontent, "Ok."])
+            grhistory.append([f"{display_name}\n---\n```{filecontent}```", "Ok."])
 
 load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/Prompts/Introdution-VSC-BusinesCentral-TestRunner.txt')
 load_file_into_history('C:/Repos/Github/KonnosPB/BusinessCentral-AL-Test-Runner-App/src/codeunit/WebApi.Codeunit.al')

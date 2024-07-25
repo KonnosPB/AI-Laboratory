@@ -41,7 +41,9 @@ load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner
 load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/testViewProviders.ts')
 load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/extension.ts')
 load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/logger.ts')
-load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/test/extension.test.ts')
+#load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/test/extension.test.ts')
+load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/test/project.test.ts')
+
 
 # Function to convert Gradio history to Azure OpenAI messages format
 def gradio_history_to_azure_openai_messages(gradio_history):

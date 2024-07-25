@@ -62,7 +62,8 @@ Die Visual Studio Code Extension bietet benutzerfreundliche Kommandos und Ansich
     - Dritte Ebene: Einzelne Tests
   - Testcases mit Ampeldarstellung (Status: nicht ausgeführt, in Ausführung, negativ getestet, positiv getestet).
   - Negative Testcases haben ein Child-Element zur Anzeige der Fehlermeldung.
-  - Menü-Punkte für verschiedene Aktionen: "Alle Apps kompilieren und veröffentlichen", "Main App kompilieren und veröffentlichen", "Test App kompilieren und veröffentlichen", "Alle Tests ausführen", "Ausgewählte Tests ausführen".
+  - Menü-Punkte für verschiedene Aktionen: "Alle Apps kompilieren und veröffentlichen", "Main App kompilieren und veröffentlichen", 
+"Test App kompilieren und veröffentlichen", "Alle Tests ausführen", "Ausgewählte Tests ausführen".
   - Hover-Funktion über Testcases zur Anzeige von Erfolgs- oder Fehlermeldungen.
 
 - **Commit-Integration:**
@@ -74,10 +75,25 @@ Die Visual Studio Code Extension bietet benutzerfreundliche Kommandos und Ansich
     5. Ausführung der ermittelten Tests.
     6. Automatisiertes Anfügen der Testergebnisse an die Commit-Message.
 
+- **Finden der VSC Projekte für BC Main App und Test App:**
+  - Es existieren immer zwei Business Central Visual Studio Code Projekte. Ein Main Projekt und ein Test Projekt.
+  - Testprojekte/Test-App kann man anhand der app.json Dependency "Tests-TestLibraries" erkennen. 
+  - Mainprojekte/Main-App hat keine Abhängigkeit zu "Tests-TestLibraries"
+  - Die Projekte können in einem VSC-Workspace organisiert sein, müssen aber nicht.
+  - Die Projekt liegen immer im selben Git-Repository. Das bedeutet, dass das Wurzelverzeichnis der Projekt das Verzeichnis .git enthält
+
+### Visual Studio Code Extension Unit Tests
+Um die Implementierung testen zu können gibt es eine Beispielprojekt im Verzeichnis "..\VSC-BusinessCentral-Test-Runner- BC-Test-Resources\ 
+Es gibt hierfür auch eine "..\VSC-BusinessCentral-Test-Runner- BC-Test-Resources\BC-Test-Resources.code-workspace" Workspace-Datei
+Diese Enthält in einem Repository zwei  Dynamics Business Central Visual Studio Projekte für die Main-App `testresource-app` und die Testapp `testresource-testapp`.
+Test wie Main-App haben existierende launch.json Konfigurationen, die in echte Umgebungen verweisen. 
+Daher können die Tests unter nahezu realistischen Bedingungen durchgeführt werden.
+
 ---
 
 ### Zusammenfassung
-Die "Business Central AL Test Runner" Lösung besteht aus einer Business Central App und einer Visual Studio Code Extension, die nahtlos zusammenarbeiten, um Business Central Entwickler zu unterstützen:
+Die "Business Central AL Test Runner" Lösung besteht aus einer Business Central App und einer Visual Studio Code Extension, die nahtlos zusammenarbeiten, 
+um Business Central Entwickler zu unterstützen:
 
 1. **Business Central App:**
    - Bietet WebServices für TestSuite Management, Test Execution, Mapping und Exclusion Management.
@@ -88,7 +104,8 @@ Die "Business Central AL Test Runner" Lösung besteht aus einer Business Central
    - Unterstützt fehlertolerante Kompilierung und Veröffentlichung.
    - Erweitert die Source Control View für besseren Überblick und einfache Navigation.
 
-Durch die Nutzung dieser beiden Komponenten können Entwickler Zeit sparen und die Qualität ihrer Business Central Anwendungen durch automatisierte Tests verbessern. Die Lösung ist darauf ausgelegt, sowohl die Testausführung als auch die Verwaltung von Testfällen und Projekten effizienter und benutzerfreundlicher zu gestalten.
+Durch die Nutzung dieser beiden Komponenten können Entwickler Zeit sparen und die Qualität ihrer Business Central Anwendungen durch automatisierte Tests verbessern. 
+Die Lösung ist darauf ausgelegt, sowohl die Testausführung als auch die Verwaltung von Testfällen und Projekten effizienter und benutzerfreundlicher zu gestalten.
 
 ---
 

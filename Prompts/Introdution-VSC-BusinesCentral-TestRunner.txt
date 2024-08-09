@@ -1,20 +1,13 @@
-# Kernfunktionalität der Visual Studio Code Extension:
-1. Der Business Central Entwickler soll automatisierte Tests direkt aus Visual Studio Code heraus ausführen können, ohne auf das AL Test Tool im Browser wechseln zu müssen.
-2. Die Extension erkennt anhand der von Git registrierten Änderungen, welche Tests ausgeführt werden sollen, und führt diese selektiv aus, um Zeit zu sparen. 
-   _Auf Business Central Seite werden hierzu in einem Vorlauf die bei einem Test involvierten Objekte via Code-Coverage aufgezeichnet und in einer Object-Test Mapping Tabelle gespeichert._
-3. Sie kann Business Central AL Projekte kompilieren und veröffentlichen.
-4. Sie fügt die Anzahl der ausgeführten, negativen und positiven Tests in die Commit-Nachricht ein.
+Ich benötige Unterstützung bei der Entwicklung einer Visual Studio Code Extension für Dynamics Business Central AL Entwickler. Die Extension soll folgende Kernfunktionalitäten bieten:
 
-## Grobkonzept
+1. Automatisierte Tests direkt aus Visual Studio Code heraus ausführen.
+2. Anhand von Git-Änderungen selektiv Tests ausführen.
+3. Business Central AL Projekte kompilieren und veröffentlichen.
+4. Testergebnisse in die Commit-Nachricht einfügen.
+5. Eine einfache Test Suite Verwaltung bieten.
 
 ### Einführung
-Ich bin Mitglied eines erfahrenen Dynamics Business Central AL Entwicklerteams von ca. 6 Entwicklern. 
-Wir entwickeln gemeinsam für zwei BC Branchenlösungen (Healthcare und Medtec). 
-Hierfür sind sehr viele automatisierte Tests implementiert worden. 
-Das hat leider die negative Folge, dass die Tests eine sehr lange Laufzeit haben. 
-Da wir die Testabdeckung erhöhen wollen, ist die Tendenz steigend. 
-Meine Team-Mitglieder und ich wünschen uns daher einen Weg, wie wir eine Programmierung möglichst effizient und zielgerichtet, "mal eben" testen können, bevor wir einen Pull-Request absetzen.  
-Das ist der Grund für das Projekt.
+Ich bin Mitglied eines Dynamics Business Central AL Entwicklerteams. Wir entwickeln für zwei BC Branchenlösungen (Healthcare und Medtec) und haben viele automatisierte Tests, die lange Laufzeiten haben. Wir suchen nach einer Möglichkeit, effizient und zielgerichtet zu testen, bevor wir Pull-Requests absetzen.
 
 ### Komponenten
 Die Lösung besteht aus zwei Hauptkomponenten:
@@ -22,92 +15,33 @@ Die Lösung besteht aus zwei Hauptkomponenten:
 2. **Visual Studio Code Extension "Business Central AL Test Runner"**
 
 #### Business Central App
-Die Business Central App bietet einen WebService, der folgende Aktionen ausführt:
+Die App bietet WebServices für:
+- **TestSuite Management**: Anlegen, Hinzufügen und Löschen von TestSuites.
+- **Test Execution**: Ausführen und Export/Download von Testergebnissen.
+- **Mapping & Exclusion Management**: Erstellung und Export/Import von Objekt-/Testfall-Mappings und Ausschlussdateien.
 
-- **TestSuite Management:**
-  - Anlegen, Hinzufügen von Test-Codeunits und Löschen von TestSuites.
-
-- **Test Execution:**
-  - Ausführen von Tests und Export/Download der Testergebnisse und Fehlermeldungen.
-
-- **Mapping & Exclusion Management:**
-  - Erstellung und Export/Import eines Objekt-/Testfall-Mappings zur Ermittlung auszuführender Tests.
-  - Import von Ausschlussdateien zur Deaktivierung und bewussten Überspringung von Testfällen.
-
-### Visual Studio Code Extension
-Die Visual Studio Code Extension bietet benutzerfreundliche Kommandos und Ansichten, die die Funktionen der Business Central App nutzen. Die Hauptfunktionen sind:
-
-- **Projekt- und Test-Erkennung:**
-  - Automatische Erkennung, welche Projekte die reguläre App (Main-App) und die Test-App enthalten.
-    - Anmerkung: Die Tests zu einer App sind in einer separaten TestApp ausgelagert. Beide Projekte liegen im selben Git-Repository, wobei nur die Test-App Microsoft Standard Test Libraries referenziert.
-
-- **Compiler- und Objekt-Erkennung:**
-  - Lokalisierung des AL-Kompilers (alc.exe) für die aktuell verwendete "AL Language Extension for Microsoft Dynamics 365 Business Central" Version.
-  - Erkennung, welche Business Central Objekte durch Git-Änderungen betroffen sind.
-
-- **Konfigurations- und Credentials-Management:**
-  - Auswahl einer Launch.json Konfiguration zur Festlegung des Ziels für Business Central Aktivitäten.
-    - Anhand der Konfiguration wird ein TestSuite-Vorschlag erstellt, der die Maximallänge von 10 Zeichen nicht überschreitet.
-  - Abfrage und Speicherung von Anmeldedaten (immer basierend auf NavUserPassword, Base-Authentication).
-
-- **Fehlertolerante Kompilierung und Veröffentlichung:**
-  - Funktion zur Kompilierung von Projekten, wobei nur Fehler relevant sind und Warnungen ignoriert werden.
-  - Veröffentlichung von Apps in der Zielumgebung gemäß der Launch.json Konfiguration.
-
-- **Ansichten und Benutzeroberfläche:**
-  - Erweiterung der "Source Control" View um eine "Test" Ansicht, die nur Tests im Zusammenhang mit den geänderten Objekten anzeigt.
-  - Eine zusätzliche "Business Central AL Test Runner" View, die alle Tests der TestSuite in einer Baumstruktur darstellt:
-    - Wurzelelement: TestSuite Name
-    - Zweite Ebene: Test-Codeunit
-    - Dritte Ebene: Einzelne Tests
-  - Testcases mit Ampeldarstellung (Status: nicht ausgeführt, in Ausführung, negativ getestet, positiv getestet).
-  - Negative Testcases haben ein Child-Element zur Anzeige der Fehlermeldung.
-  - Menü-Punkte für verschiedene Aktionen: "Alle Apps kompilieren und veröffentlichen", "Main App kompilieren und veröffentlichen", 
-"Test App kompilieren und veröffentlichen", "Alle Tests ausführen", "Ausgewählte Tests ausführen".
-  - Hover-Funktion über Testcases zur Anzeige von Erfolgs- oder Fehlermeldungen.
-
-- **Commit-Integration:**
-  - Erweiterung der "Git Commitmessage" Ansicht der "Source Control" View um einen "Test Changes" Menüpunkt:
-    1. Ermittlung der auszuführenden Tests anhand der Git-Änderungen und des Objekt-Test-Mappings.
-    2. Kompilierung und Veröffentlichung der Main App.
-    3. Kompilierung und Veröffentlichung der Test-App.
-    4. Aktualisierung der Ausschlussdatei im Business Central Zielsystem.
-    5. Ausführung der ermittelten Tests.
-    6. Automatisiertes Anfügen der Testergebnisse an die Commit-Message.
-
-- **Finden der VSC Projekte für BC Main App und Test App:**
-  - Es existieren immer zwei Business Central Visual Studio Code Projekte. Ein Main Projekt und ein Test Projekt.
-  - Testprojekte/Test-App kann man anhand der app.json Dependency "Tests-TestLibraries" erkennen. 
-  - Mainprojekte/Main-App hat keine Abhängigkeit zu "Tests-TestLibraries"
-  - Die Projekte können in einem VSC-Workspace organisiert sein, müssen aber nicht.
-  - Die Projekt liegen immer im selben Git-Repository. Das bedeutet, dass das Wurzelverzeichnis der Projekt das Verzeichnis .git enthält
+#### Visual Studio Code Extension
+Die Extension bietet:
+- **Projekt-Erkennung**: Automatische Erkennung von Main- und Test-Projekten anhand der app.json Dependencies.
+- **Compiler- und Objekt-Erkennung**: Lokalisierung des AL-Kompilers und Erkennung von Git-Änderungen.
+- **Konfigurations- und Credentials-Management**: Auswahl einer Launch.json Konfiguration und Speicherung von Anmeldedaten.
+- **Fehlertolerante Kompilierung und Veröffentlichung**: Kompilierung und Veröffentlichung von Projekten, wobei nur Fehler relevant sind.
+- **Ansicht "BC Test Runner"**: Baumartige Struktur zur Verwaltung und Ausführung von Tests:
+  - **Ebene 1**: Zielumgebungen (aus launch.json Konfigurationen).
+  - **Ebene 2**: Test-Suites der Zielumgebung.
+  - **Ebene 3**: Test-Cases der Test-Suite.
+  - **Ebene 4**: Zusatzinfo zum Test-Case (z.B. Fehlermeldungen).
+- **Verwaltung Test Suite**: Menüpunkte wie Aktualisieren, Selektieren, Test Suite neu anlegen, Test Suite anzeigen, Run Tests, Rebuild & Run Tests, Stop Test.
+- **Ansicht "Test Changes"**: Eingruppiert in "Source Control" View, zeigt relevante Test-Cases basierend auf Git-Änderungen:
+  - **Ebene 1**: Ausgewählte Test-Suite.
+  - **Ebene 2**: Relevante Test-Cases.
+  - **Ebene 3**: Zusatzinfo zum Test-Case.
+  - Menüpunkte: Run Tests, Rebuild & Run Tests, Stop Test.
+- **Commit-Integration**: Erweiterung der "Git Commitmessage" Ansicht um einen "Rebuild & Test Changes" Menüpunkt:
+  - Ermittlung und Ausführung der relevanten Tests.
+  - Automatisiertes Anfügen der Testergebnisse an die Commit-Message.
 
 ### Visual Studio Code Extension Unit Tests
-Um die Implementierung testen zu können gibt es eine Beispielprojekt im Verzeichnis "..\VSC-BusinessCentral-Test-Runner- BC-Test-Resources\ 
-Es gibt hierfür auch eine "..\VSC-BusinessCentral-Test-Runner- BC-Test-Resources\BC-Test-Resources.code-workspace" Workspace-Datei
-Diese Enthält in einem Repository zwei  Dynamics Business Central Visual Studio Projekte für die Main-App `testresource-app` und die Testapp `testresource-testapp`.
-Test wie Main-App haben existierende launch.json Konfigurationen, die in echte Umgebungen verweisen. 
-Daher können die Tests unter nahezu realistischen Bedingungen durchgeführt werden.
+Ein Beispielprojekt im Verzeichnis "..\VSC-BusinessCentral-Test-Runner-BC-Test-Resources\" enthält zwei Dynamics Business Central Visual Studio Projekte für die Main-App `testresource-app` und die Testapp `testresource-testapp`. Die Tests können unter realistischen Bedingungen durchgeführt werden.
 
----
-
-### Zusammenfassung
-Die "Business Central AL Test Runner" Lösung besteht aus einer Business Central App und einer Visual Studio Code Extension, die nahtlos zusammenarbeiten, 
-um Business Central Entwickler zu unterstützen:
-
-1. **Business Central App:**
-   - Bietet WebServices für TestSuite Management, Test Execution, Mapping und Exclusion Management.
-
-2. **Visual Studio Code Extension:**
-   - Automatisiert und vereinfacht die Testausführung direkt aus Visual Studio Code heraus.
-   - Integriert Kommandos und Ansichten zur effizienten Verwaltung von Tests und Projekten.
-   - Unterstützt fehlertolerante Kompilierung und Veröffentlichung.
-   - Erweitert die Source Control View für besseren Überblick und einfache Navigation.
-
-Durch die Nutzung dieser beiden Komponenten können Entwickler Zeit sparen und die Qualität ihrer Business Central Anwendungen durch automatisierte Tests verbessern. 
-Die Lösung ist darauf ausgelegt, sowohl die Testausführung als auch die Verwaltung von Testfällen und Projekten effizienter und benutzerfreundlicher zu gestalten.
-
----
-
-
-Es folgen nun einige wichtige Business Central AL und Visual Studio Code Extension Typescript Dateien, damit der Kontext vervollständigt ist.
+Bitte hilf mir bei der weiteren Entwicklung und Optimierung dieser Extension.

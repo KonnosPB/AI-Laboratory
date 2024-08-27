@@ -37,23 +37,22 @@ def load_file_into_history(file_path):
 def append_history(message):
     grhistory.append([message, "Ok."])
 
+systemPromptPath = "C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/SystemPrompt.txt"
 # Load initial files into history
-load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Introdution.txt')
+load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Introduction.txt')
 
 load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Kumavision.Web.Api.ImageUtils.Service.csproj')
 load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/appsettings.json')
 
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Install/license.txt')
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Install/info-after-install.txt')
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Install/info-before-install.txt')
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Install/Installer_Script.iss')
+load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Inno-Setup-Class-Reference.txt')
+load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Inno-Setup-Function-Reference.txt')
 
 
 # Function to convert Gradio history to Azure OpenAI messages format
 def gradio_history_to_azure_openai_messages(gradio_history):
     messages = []
     try:
-        with open("C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/SystemPrompt.txt", 'r', encoding='utf-8') as file:
+        with open(systemPromptPath, 'r', encoding='utf-8') as file:
             filecontent = file.read()
             messages.append({"role": "system", "content": filecontent})
     except Exception as e:

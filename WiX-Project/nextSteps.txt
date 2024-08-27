@@ -1,0 +1,146 @@
+Um das WiX-Projekt voranzutreiben und die Anforderungen vollständig zu erfüllen, sollten wir folgende Schritte unternehmen:
+
+### 1. **Erstellen der UI-Ansichten:**
+   - **Lizenzinformation**: Dies ist bereits in `Package.wxs` enthalten.
+   - **Dienstaccount und Passwort**: Fügen Sie Eingabefelder für den Dienstaccount und das Passwort hinzu.
+   - **Kestrel Service-Konfiguration**: Fügen Sie Eingabefelder für Hostname und Port hinzu.
+   - **Zertifikatsinstallation**: Fügen Sie die Installation von Server- und Client-Zertifikaten hinzu.
+   - **Druck-Warteschlangen-Konfiguration**: Fügen Sie Eingabefelder für die Druck-Warteschlangen-Konfiguration hinzu.
+
+### 2. **Erweitern der `Package.wxs`-Datei:**
+   - Referenzieren Sie die neuen UI-Ansichten.
+   - Fügen Sie die neuen `Property`-Elemente hinzu.
+
+### 3. **Erweitern der `Components.wxs`-Datei:**
+   - Fügen Sie Komponenten für die Zertifikatsinstallation hinzu.
+   - Fügen Sie Komponenten für die Druck-Warteschlangen-Konfiguration hinzu.
+
+### 4. **Erstellen von benutzerdefinierten Aktionen (Custom Actions):**
+   - Erstellen Sie benutzerdefinierte Aktionen, um die Konfigurationen aus der UI in die Konfigurationsdateien zu schreiben.
+   - Erstellen Sie benutzerdefinierte Aktionen, um die Zertifikate zu installieren.
+
+### 5. **Testen und Validieren:**
+   - Testen Sie den Installer in einer Entwicklungsumgebung.
+   - Validieren Sie, dass alle Konfigurationen korrekt angewendet werden und der Dienst wie erwartet funktioniert.
+
+### Beispiel für die nächsten Schritte:
+
+#### 1. **Erstellen der UI-Ansichten:**
+
+**Dienstaccount und Passwort:**
+```xml
+<UI>
+  <Dialog Id="CustomInstallDlg" Width="370" Height="270" Title="[ProductName] Setup">
+    <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
+      <Publish Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+    </Control>
+    <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back">
+      <Publish Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+    </Control>
+    <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+      <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+    </Control>
+    <Control Id="ServiceAccountLabel" Type="Text" X="20" Y="60" Width="290" Height="15" Text="Service Account:" />
+    <Control Id="ServiceAccount" Type="Edit" X="20" Y="75" Width="290" Height="18" Property="SERVICEACCOUNT" />
+    <Control Id="ServicePasswordLabel" Type="Text" X="20" Y="100" Width="290" Height="15" Text="Service Password:" />
+    <Control Id="ServicePassword" Type="Edit" X="20" Y="115" Width="290" Height="18" Property="SERVICEPASSWORD" Password="yes" />
+  </Dialog>
+</UI>
+```
+
+**Kestrel Service-Konfiguration:**
+```xml
+<UI>
+  <Dialog Id="KestrelConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
+    <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
+      <Publish Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+    </Control>
+    <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back">
+      <Publish Event="NewDialog" Value="CustomInstallDlg">1</Publish>
+    </Control>
+    <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+      <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+    </Control>
+    <Control Id="HostnameLabel" Type="Text" X="20" Y="60" Width="290" Height="15" Text="Hostname:" />
+    <Control Id="Hostname" Type="Edit" X="20" Y="75" Width="290" Height="18" Property="HOSTNAME" />
+    <Control Id="PortLabel" Type="Text" X="20" Y="100" Width="290" Height="15" Text="Port:" />
+    <Control Id="Port" Type="Edit" X="20" Y="115" Width="290" Height="18" Property="PORT" />
+  </Dialog>
+</UI>
+```
+
+#### 2. **Erweitern der `Package.wxs`-Datei:**
+```xml
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="Kumavision.Web.Api.ImageUtils.Service.Setup" Manufacturer="Kumavision AG" Version="1.0.0.0" UpgradeCode="7e9bf1eb-f1a5-4716-9a5e-cc4176abfea3">
+    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+
+    <UI>
+      <UIRef Id="WixUI_InstallDir" />
+      <UIRef Id="WixUI_ErrorProgressText" />
+      <UIRef Id="WixUI_License" />
+      <UIRef Id="CustomInstallDlg" />
+      <UIRef Id="KestrelConfigDlg" />
+    </UI>
+
+    <Property Id="SERVICEACCOUNT" Secure="yes" />
+    <Property Id="SERVICEPASSWORD" Secure="yes" />
+    <Property Id="HOSTNAME" Value="localhost" />
+    <Property Id="PORT" Value="5000" />
+
+    <Feature Id="Main">
+      <ComponentGroupRef Id="Components" />
+    </Feature>
+  </Package>
+</Wix>
+```
+
+#### 3. **Erweitern der `Components.wxs`-Datei:**
+```xml
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="ServerCertificate" Guid="*">
+        <File Id="ServerCert" Source="path\to\server.cert" KeyPath="yes" />
+        <RegistryKey Root="HKLM" Key="SOFTWARE\MyApp" Action="createAndRemoveOnUninstall">
+          <RegistryValue Name="ServerCertInstalled" Value="1" Type="integer" KeyPath="yes" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="ClientCertificate" Guid="*">
+        <File Id="ClientCert" Source="path\to\client.cert" KeyPath="yes" />
+        <RegistryKey Root="HKLM" Key="SOFTWARE\MyApp" Action="createAndRemoveOnUninstall">
+          <RegistryValue Name="ClientCertInstalled" Value="1" Type="integer" KeyPath="yes" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="PrintQueueConfig" Guid="*">
+        <RegistryKey Root="HKLM" Key="SOFTWARE\MyApp\PrintingQueue" Action="createAndRemoveOnUninstall">
+          <RegistryValue Name="Enabled" Value="[ENABLE_PRINT_QUEUE]" Type="string" />
+          <RegistryValue Name="MaxJobsInRAM" Value="[PARALLEL_PROCESSING_COUNT]" Type="integer" />
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
+
+    <ComponentGroup Id="Components">
+      <ComponentRef Id="MainExecutable" />
+      <ComponentRef Id="ImageUtils" />
+      <ComponentRef Id="Swashbuckle" />
+      <ComponentRef Id="MicrosoftIdentityWeb" />
+      <ComponentRef Id="Dependencies" />
+      <ComponentRef Id="WindowsService" />
+      <ComponentRef Id="ServerCertificate" />
+      <ComponentRef Id="ClientCertificate" />
+      <ComponentRef Id="PrintQueueConfig" />
+    </ComponentGroup>
+  </Fragment>
+</Wix>
+```
+
+#### 4. **Erstellen von benutzerdefinierten Aktionen (Custom Actions):**
+Erstellen Sie eine benutzerdefinierte Aktion, um die Konfigurationen aus der UI in die `appsettings.json`-Datei zu schreiben und die Zertifikate zu installieren. Dies kann in einer separaten DLL erfolgen, die Sie in Ihr WiX-Projekt einbinden.
+
+#### 5. **Testen und Validieren:**
+Erstellen und testen Sie den Installer in einer Entwicklungsumgebung, um sicherzustellen, dass alle Konfigurationen korrekt angewendet werden und der Dienst wie erwartet funktioniert.
+
+Durch diese Schritte können Sie sicherstellen, dass alle Anforderungen erfüllt werden und der Installer die gewünschte Funktionalität bietet.

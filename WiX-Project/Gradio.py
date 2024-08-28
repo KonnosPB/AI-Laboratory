@@ -46,6 +46,7 @@ load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_I
 
 load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Inno-Setup-Class-Reference.txt')
 load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Inno-Setup-Function-Reference.txt')
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Install/Installer_Script.iss')
 
 
 # Function to convert Gradio history to Azure OpenAI messages format

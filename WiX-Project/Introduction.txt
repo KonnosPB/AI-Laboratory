@@ -1,0 +1,39 @@
+Ich benötige Unterstützung bei der Entwicklung eines Installationassistenten mit jrsoftware Inno Setup für eine ASP.NET Core 8.0 Web API, die als selbstgehosteter Kestrel-Server unter Windows-Dienst betrieben wird.
+
+Der Installer soll folgende Installations-UI-Ansichten in dieser Reihenfolge enthalten:
+
+1. **Lizenzinformation**
+2. **Installationspfad**: 
+   Default=C:\Program Files\Kumavision Web Api Image Utils
+3. **Dienstaccount und Passwort**: 
+   Mit diesem Accountdaten wird der "Kumavision.Web.Api.ImageUtils.Service.exe" als Windows-Dienst registriert, wenn der User auf "Install" klickt.
+4. **Kestrel Service-Konfiguration**: 
+   Angezeigt werden die Felder Host und Port. 
+   Diese Daten werden in appsettings.json reingeschrieben, wenn der User auf "Install" klickt.
+5. **Installation des Server-PrivateKey/Zertifikats**: 
+   Angezeigt wird ein Dateipfad-Feld mit einem Filepicker, der auf pkcs12 File-Extensions (z.B. *.pfx oder *.p12) filtert und Passwort-Feld.
+   Das Zertifikat wird unter LocalMachine/Root installiert, wenn der User auf "Install" klickt
+6 **Installation des Client-Zertifikats**: 
+  a. Angezeigt wird eine Gruppe "Client-Certificate" mit einem Dateipfad-Feld und einem Filepicker, der auf Zertifikats File-Extensions (z.B. *.cer) filtert.
+     Das Zertifikat wird unter LocalMachine/TrustedPeople installiert, wenn der User auf "Install" klickt
+  b. Es wird eine zweite Gruppe "[Optional] Client-Private Key (Swagger-Test)" angezeigt.
+     Angezeigt wird ein Dateipfad-Feld mit einem Filepicker, der auf pkcs12 File-Extensions (z.B. *.pfx oder *.p12) filtert und Passwort-Feld.
+     Die pkcs12 Datei wird unter CurrentUser/My installiert, wenn der User auf "Install" klickt     
+7. **Druck-Warteschlangen-Konfiguration**: 
+   Angezeigt werden ein Feld "Enable" (Boolean, Default=true) und Anzahl "No. of parallel Jobs" (Number, Default=1).
+   Diese Daten werden in appsettings.json reingeschrieben, wenn der User auf "Install" klickt.
+8. **Protokoll-Pfad**:
+   Neues Feld "Log-Path". Defaultwert soll $Installationspath + "/logs" sein
+   Diese Daten werden in appsettings.json Serilog FilePicker reingeschrieben, wenn der User auf "Install" klickt.
+
+Bitte hilf mir, diese Anforderungen in einem Inno Setup Script zu implementieren. 
+
+**Erwartungen:**
+
+- **Ton und Stil**: Technisch und präzise
+- **Kontext**: Detaillierte Anweisungen und Beispiele, die die genannten Anforderungen erfüllen.
+- **Beispiele**: Konkrete Beispiele im Inno Setup Pascal für die verschiedenen UI-Ansichten und Konfigurationselemente.
+- **Referenczen**:  Du berücksichtist das aktuellen Klassen (Inno-Setup-Class-Reference.txt) und Referencemodell (Inno-Setup-Function-Reference.txt) von Inno-Setup.
+
+
+

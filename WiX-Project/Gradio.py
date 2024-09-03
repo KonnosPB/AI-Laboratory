@@ -15,6 +15,9 @@ def load_file_into_history(file_path):
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             filecontent = file.read()
+            # Entferne das BOM, falls vorhanden
+            if filecontent.startswith('\ufeff'):
+                filecontent = filecontent.lstrip('\ufeff')
             file_name, file_extension = os.path.splitext(file_path)
             display_name = os.path.basename(file_path)
             print(f"Loading {file_path}")
@@ -23,7 +26,7 @@ def load_file_into_history(file_path):
             elif file_extension == ".json":
                 grhistory.append([f"{display_name}\n---\n``` json\n{filecontent}\n```", "Ok."])
             elif file_extension == ".xml":
-                grhistory.append([f"{display_name}\n---\n``` xml\n{filecontent}\n```", "Ok."])
+                grhistory.append([f"{display_name}\n---\n``` xml\n{filecontent}\n```", "Ok."])            
             elif file_extension == ".ps1":
                 grhistory.append([f"{display_name}\n---\n``` powershell\n{filecontent}\n```", "Ok."])
             else:
@@ -31,29 +34,26 @@ def load_file_into_history(file_path):
     except Exception as e:
         print(f"Error loading file {file_path}: {e}")
 
+def append_history(message):
+    grhistory.append([message, "Ok."])
+
+systemPromptPath = "C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/SystemPrompt.txt"
 # Load initial files into history
-load_file_into_history('C:/Repheos/Github/KonnosPB/AI-Laboratory/Prompts/Introdution-VSC-BusinesCentral-TestRunner.txt')
-load_file_into_history('C:/Repos/Github/KonnosPB/BusinessCentral-AL-Test-Runner-App/src/codeunit/WebApi.Codeunit.al')
-load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/package.json')
-load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/types.ts')
-load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/utils.ts')
-load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/logger.ts')
-load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/apiClient.ts')
-load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/project.ts')
-load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/testRunner.ts')
-load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/testViewProviders.ts')
-load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/extension.ts')
-load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/preconditions.ts')
-#load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/test/extension.test.ts')
-#load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/test/fsHelper.test.ts')
-#load_file_into_history('C:/Repos/Github/KonnosPB/VSC-BusinessCentral-Test-Runner/src/test/project.test.ts')
+load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Introduction.txt')
+
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Kumavision.Web.Api.ImageUtils.Service.csproj')
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/appsettings.json')
+
+load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Inno-Setup-Class-Reference.txt')
+load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Inno-Setup-Function-Reference.txt')
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Install/Installer_Script.iss')
 
 
 # Function to convert Gradio history to Azure OpenAI messages format
 def gradio_history_to_azure_openai_messages(gradio_history):
     messages = []
     try:
-        with open("C:/Repos/Github/KonnosPB/AI-Laboratory/Prompts/SystemPrompt-VSC-BusinesCentral-TestRunner.txt", 'r', encoding='utf-8') as file:
+        with open(systemPromptPath, 'r', encoding='utf-8') as file:
             filecontent = file.read()
             messages.append({"role": "system", "content": filecontent})
     except Exception as e:
@@ -169,3 +169,8 @@ with gr.Blocks(head=head_style) as demo:
 
 # Launch the Gradio interface
 demo.launch()
+
+
+
+
+

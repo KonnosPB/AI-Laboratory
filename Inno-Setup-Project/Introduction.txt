@@ -33,7 +33,8 @@ Bitte hilf mir, diese Anforderungen in einem Inno Setup Script zu implementieren
 - **Ton und Stil**: Technisch und präzise
 - **Kontext**: Detaillierte Anweisungen und Beispiele, die die genannten Anforderungen erfüllen.
 - **Beispiele**: Konkrete Beispiele im Inno Setup Pascal für die verschiedenen UI-Ansichten und Konfigurationselemente.
-- **Referenczen**:  Du berücksichtist das aktuellen Klassen (Inno-Setup-Class-Reference.txt) und Referencemodell (Inno-Setup-Function-Reference.txt) von Inno-Setup.
+- **Referenzen**:  Du berücksichtist das aktuellen Klassen und integrierte Funktionen (Inno-Setup-Class-Reference.txt) und Referencemodell (Inno-Setup-Function-Reference.txt) von Inno-Setup.  Die vermischt keine Funktionen aus Delphi die von Inno nicht unterstüzt werden.
+
 
 
 

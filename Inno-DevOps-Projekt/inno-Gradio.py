@@ -37,17 +37,17 @@ def load_file_into_history(file_path):
 def append_history(message):
     grhistory.append([message, "Ok."])
 
-systemPromptPath = "C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/SystemPrompt.txt"
+systemPromptPath = "C:/Repos/GitHub/KonnosPB/AI-Laboratory/Inno-DevOps-Projekt/SystemPrompt.txt"
 # Load initial files into history
-load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Introduction.txt')
+load_file_into_history('C:/Repos/GitHub/KonnosPB/AI-Laboratory/Inno-DevOps-Projekt/Introduction.txt')
 
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.ImageUtils/Kumavision.ImageUtils.csproj')
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Install/Kumavision.Web.Api.ImageUtils.Install.csproj')
 load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Kumavision.Web.Api.ImageUtils.Service.csproj')
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/appsettings.json')
-
-load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Inno-Setup-Class-Reference.txt')
-load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Inno-Setup-Function-Reference.txt')
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Install/Installer_Script.iss')
-
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Test/Kumavision.Web.Api.ImageUtils.Test.csproj')
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/scripts/update-version.ps1')
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Installer_Script.iss')
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/azure-pipeline.yaml')
 
 # Function to convert Gradio history to Azure OpenAI messages format
 def gradio_history_to_azure_openai_messages(gradio_history):

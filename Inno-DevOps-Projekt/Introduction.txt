@@ -1,0 +1,38 @@
+Ich benötige Unterstützung bei der Erstellung einer Azure DevOps Pipeline.
+
+### Ziele sind:
+1. **Automatische File- und Assembly-Versionserhöhung**: Wenn ein Pull-Request gegen den master-Branch genehmigt wird, soll die Minor-Version erhöht werden. Beispiel: Vorher 1.0.0.0 => Nachher 1.1.0.0.
+2. **Interaktive Versionserhöhung**: Ein eigenständiges PowerShell-Skript soll die Version ebenfalls erhöhen und dem Anwender Vorschläge machen, wobei der Anwender auch die Major-Version anpassen kann.
+3. **Erstellung einer *.zip-Datei**: Alle erforderlichen Artefakte sollen für eine manuelle Installation durch die DevOps Pipeline in einer ZIP-Datei gebündelt werden. Beispiel: Kumavision.Web.Api.Image.Utils.<Version>.zip.
+4. **Erstellung einer Setup-Datei**: Eine Setup-Datei für eine assistentengeführte Installation soll durch die DevOps Pipeline erstellt werden. Beispiel: Kumavision.Web.Api.Image.Utils.Setup.<Version>.exe. Es wird Inno Setup als Tool zur Erstellung der Installation verwendet.
+
+### Übersicht der relevanten Komponenten:
+- **Visual Studio .NET Core Projekt**: `.\Kumavision.ImageUtils\Kumavision.ImageUtils.csproj` (Kernimplementierung der Anforderungen)
+- **Visual Studio .NET Core Projekt**: `.\Kumavision.Web.Api.ImageUtils.Service\Kumavision.Web.Api.ImageUtils.Service.csproj` (Implementierung des selbstgehosteten Kestrel-Dienstes)
+- **Visual Studio .NET Core Test Projekt**: `.\Kumavision.Web.Api.ImageUtils.Test\Kumavision.Web.Api.ImageUtils.Test.csproj`
+- **Visual Studio .NET Core Installer Projekt**: `.\Kumavision.Web.Api.ImageUtils.Install\Kumavision.Web.Api.ImageUtils.Install.csproj` (Erweiterung von Inno Setup)
+
+### Aktuelle Verzeichnisstuktur
+/Kumavision.Web.Api.ImageUtils
+|-- /Kumavision.ImageUtils
+|   |-- Kumavision.ImageUtils.csproj
+|   |-- ...
+|-- /Kumavision.Web.Api.ImageUtils.Service
+|   |-- Kumavision.Web.Api.ImageUtils.Service.csproj
+|   |-- ...
+|-- /Kumavision.Web.Api.ImageUtils.Test
+|   |-- Kumavision.Web.Api.ImageUtils.Test.csproj
+|   |-- ...
+|-- /Kumavision.Web.Api.ImageUtils.Install
+|   |-- Kumavision.Web.Api.ImageUtils.Install.csproj
+|   |-- ...
+|-- /scripts
+|   |-- Update-Version.ps1
+|-- Installer_Script.iss
+|-- azure-pipeline.yaml
+
+### Erwartungen:
+- **Ton und Stil**: Technisch und präzise.
+- **Kontext**: Detaillierte Anweisungen und Beispiele, die die genannten Anforderungen erfüllen.
+- **Beispiele**: Konkrete Beispiele im Inno Setup Pascal für verschiedene UI-Ansichten und Konfigurationselemente.
+- **Referenzen**: Die aktuellen Klassen und integrierten Funktionen von Inno Setup werden berücksichtigt (siehe Inno-Setup-Class-Reference.txt und Inno-Setup-Function-Reference.txt). Funktionen aus Delphi, die von Inno Setup nicht unterstützt werden, werden nicht verwendet.

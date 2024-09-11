@@ -7,6 +7,19 @@ import tkinter as tk
 from tkinter import filedialog
 import json
 
+# Example usage
+system_prompt_path = "./Inno-DevOps-Projekt/SystemPrompt.txt"
+initial_files = [
+    './Inno-DevOps-Projekt/Introduction.txt',
+    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.ImageUtils/Kumavision.ImageUtils.csproj',
+    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Install/Kumavision.Web.Api.ImageUtils.Install.csproj',
+    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Kumavision.Web.Api.ImageUtils.Service.csproj',
+    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Test/Kumavision.Web.Api.ImageUtils.Test.csproj',
+    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/scripts/update-version.ps1',
+    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Installer_Script.iss',
+    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/azure-pipeline.yaml'
+]
+
 # Global variable to store chat history
 grhistory = []
 
@@ -22,38 +35,26 @@ def load_file_into_history(file_path):
             display_name = os.path.basename(file_path)
             print(f"Loading {file_path}")
             if file_extension == ".ts":
-                grhistory.append([f"{display_name}\n---\n``` typescript\n{filecontent}\n```", "Ok."])
+                grhistory.append([f"{display_name}\n---\n```typescript\n{filecontent}\n```", "Ok."])
             elif file_extension == ".json":
-                grhistory.append([f"{display_name}\n---\n``` json\n{filecontent}\n```", "Ok."])
+                grhistory.append([f"{display_name}\n---\n```json\n{filecontent}\n```", "Ok."])
             elif file_extension == ".xml":
-                grhistory.append([f"{display_name}\n---\n``` xml\n{filecontent}\n```", "Ok."])            
+                grhistory.append([f"{display_name}\n---\n```xml\n{filecontent}\n```", "Ok."])            
             elif file_extension == ".ps1":
-                grhistory.append([f"{display_name}\n---\n``` powershell\n{filecontent}\n```", "Ok."])
+                grhistory.append([f"{display_name}\n---\n```powershell\n{filecontent}\n```", "Ok."])
             else:
-                grhistory.append([f"{display_name}\n---\n```\n{filecontent}```", "Ok."])
+                grhistory.append([f"{display_name}\n---\n```\n{filecontent}\n```", "Ok."])
     except Exception as e:
         print(f"Error loading file {file_path}: {e}")
 
 def append_history(message):
     grhistory.append([message, "Ok."])
 
-systemPromptPath = "C:/Repos/GitHub/KonnosPB/AI-Laboratory/Inno-DevOps-Projekt/SystemPrompt.txt"
-# Load initial files into history
-load_file_into_history('C:/Repos/GitHub/KonnosPB/AI-Laboratory/Inno-DevOps-Projekt/Introduction.txt')
-
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.ImageUtils/Kumavision.ImageUtils.csproj')
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Install/Kumavision.Web.Api.ImageUtils.Install.csproj')
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Kumavision.Web.Api.ImageUtils.Service.csproj')
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Test/Kumavision.Web.Api.ImageUtils.Test.csproj')
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/scripts/update-version.ps1')
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Installer_Script.iss')
-load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/azure-pipeline.yaml')
-
 # Function to convert Gradio history to Azure OpenAI messages format
-def gradio_history_to_azure_openai_messages(gradio_history):
+def gradio_history_to_azure_openai_messages(gradio_history, system_prompt_path):
     messages = []
     try:
-        with open(systemPromptPath, 'r', encoding='utf-8') as file:
+        with open(system_prompt_path, 'r', encoding='utf-8') as file:
             filecontent = file.read()
             messages.append({"role": "system", "content": filecontent})
     except Exception as e:
@@ -65,8 +66,8 @@ def gradio_history_to_azure_openai_messages(gradio_history):
     return messages
 
 # Asynchronous chat function to interact with Azure OpenAI
-async def chat(message, history):
-    messages = gradio_history_to_azure_openai_messages(history)
+async def chat(message, history, system_prompt_path):
+    messages = gradio_history_to_azure_openai_messages(history, system_prompt_path)
     prompt = message
     if hasattr(message, "text"):
         prompt = message.text
@@ -142,35 +143,37 @@ head_style = """
 </style>
 """
 
-# Gradio chatbot component
-chatbot = gr.Chatbot(value=grhistory, height="100%", min_width="100%", render_markdown=True, bubble_full_width=True, show_copy_button=True, elem_classes="chatbot-bubble")
+def create_interface(system_prompt_path, initial_files):
+    # Load initial files into history
+    for file_path in initial_files:
+        load_file_into_history(file_path)
 
-# Gradio interface setup
-with gr.Blocks(head=head_style) as demo:
-    gr.Markdown("# Development Bot")
-    gr.HTML(custom_css)  # Add custom CSS here
-    chatbot.render()
-    with gr.Row():
-        save_button = gr.Button("Save Chat History")
-        load_button = gr.Button("Load Chat History")
+    # Gradio chatbot component
+    chatbot = gr.Chatbot(value=grhistory, height="100%", min_width="100%", render_markdown=True, bubble_full_width=True, show_copy_button=True, elem_classes="chatbot-bubble")
+    
+    # Gradio interface setup
+    with gr.Blocks(head=head_style) as demo:
+        gr.Markdown("# Development Bot")
+        gr.HTML(custom_css)  # Add custom CSS here
+        chatbot.render()
+        with gr.Row():
+            save_button = gr.Button("Save Chat History")
+            load_button = gr.Button("Load Chat History")
 
-    save_button.click(fn=save_history)
-    load_button.click(fn=load_history, outputs=chatbot)
+        save_button.click(fn=save_history)
+        load_button.click(fn=load_history, outputs=chatbot)
 
-    gr.ChatInterface(
-        fn=chat,
-        chatbot=chatbot,
-        title="Development Bot",
-        autofocus=True,
-        multimodal=True,
-        fill_width=True,
-        fill_height=True,
-    )
+        gr.ChatInterface(
+            fn=lambda message, history: chat(message, history, system_prompt_path),
+            chatbot=chatbot,
+            title="Development Bot",
+            autofocus=True,
+            multimodal=True,
+            fill_width=True,
+            fill_height=True,
+        )
 
-# Launch the Gradio interface
-demo.launch()
+    # Launch the Gradio interface
+    demo.launch()
 
-
-
-
-
+create_interface(system_prompt_path, initial_files)

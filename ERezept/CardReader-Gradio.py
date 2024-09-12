@@ -7,27 +7,10 @@ import tkinter as tk
 from tkinter import filedialog
 import json
 
-# Example usage
-system_prompt_path = "./Inno-DevOps-Projekt/SystemPrompt.txt"
-initial_files = [
-    './Inno-DevOps-Projekt/Introduction.txt',
-    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.ImageUtils/Kumavision.ImageUtils.csproj',
-    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Install/Kumavision.Web.Api.ImageUtils.Install.csproj',
-    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Install/Properties/PublishProfiles/FolderProfile.pubxml',    
-    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Kumavision.Web.Api.ImageUtils.Service.csproj',
-    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Test/Kumavision.Web.Api.ImageUtils.Test.csproj',
-    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/scripts/update-version.ps1',
-    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/scripts/compare-version.ps1',
-    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Installer_Script.iss',
-    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/azure-pipeline.yaml'
-]
-
 # Global variable to store chat history
 grhistory = []
 
 # Function to load a file into chat history
-grhistory.append([f"Es folgen nun einige Dateien, die helfen sollen, ein besseres Verständnis für den Kontext zu erhalten.", "Alles klar. Ich bin bereit"])
-
 def load_file_into_history(file_path):
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
@@ -39,29 +22,36 @@ def load_file_into_history(file_path):
             display_name = os.path.basename(file_path)
             print(f"Loading {file_path}")
             if file_extension == ".ts":
-                grhistory.append([f"{display_name}\n---\n``` typescript\n{filecontent}\n```", "Ok. Eingeprägt und verstanden"])
+                grhistory.append([f"{display_name}\n---\n``` typescript\n{filecontent}\n```", "Ok."])
             elif file_extension == ".json":
-                grhistory.append([f"{display_name}\n---\n``` json\n{filecontent}\n```", "Ok. Eingeprägt und verstanden"])
+                grhistory.append([f"{display_name}\n---\n``` json\n{filecontent}\n```", "Ok."])
             elif file_extension == ".xml":
-                grhistory.append([f"{display_name}\n---\n``` xml\n{filecontent}\n```", "Ok. Eingeprägt und verstanden"])            
+                grhistory.append([f"{display_name}\n---\n``` xml\n{filecontent}\n```", "Ok."])            
             elif file_extension == ".ps1":
-                grhistory.append([f"{display_name}\n---\n``` powershell\n{filecontent}\n```", "Ok. Eingeprägt und verstanden"])
+                grhistory.append([f"{display_name}\n---\n``` powershell\n{filecontent}\n```", "Ok."])
             else:
-                grhistory.append([f"{display_name}\n---\n```\n{filecontent}```", "Ok. Eingeprägt und verstanden"])
+                grhistory.append([f"{display_name}\n---\n```\n{filecontent}```", "Ok."])
     except Exception as e:
         print(f"Error loading file {file_path}: {e}")
 
-for file_path in initial_files:
-    load_file_into_history(file_path)        
-
 def append_history(message):
     grhistory.append([message, "Ok."])
+
+systemPromptPath = "C:/Repos/Github/KonnosPB/AI-Laboratory/ERezept/CardReader-SystemPrompt.txt"
+# Load initial files into history
+load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/ERezept/CardReader-Introduction.txt')
+
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/eRezept/KUMAVISION healthcare eRezept CardReader/Docs/remote-management-specification_ST-1506_v2.5.txt')
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/eRezept/KUMAVISION healthcare eRezept CardReader/style.css')
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/eRezept/KUMAVISION healthcare eRezept CardReader/index.html')
+load_file_into_history('C:/Repos/DevOps/HC-Work/Product_MED/eRezept/KUMAVISION healthcare eRezept CardReader/script.js')
+
 
 # Function to convert Gradio history to Azure OpenAI messages format
 def gradio_history_to_azure_openai_messages(gradio_history):
     messages = []
     try:
-        with open(system_prompt_path, 'r', encoding='utf-8') as file:
+        with open(systemPromptPath, 'r', encoding='utf-8') as file:
             filecontent = file.read()
             messages.append({"role": "system", "content": filecontent})
     except Exception as e:
@@ -73,12 +63,12 @@ def gradio_history_to_azure_openai_messages(gradio_history):
     return messages
 
 # Asynchronous chat function to interact with Azure OpenAI
-async def chat_async(message, history):
+async def chat(message, history):
     messages = gradio_history_to_azure_openai_messages(history)
     prompt = message
     if hasattr(message, "text"):
         prompt = message.text
-    messages.append({"role": "user", "content": prompt})   
+    messages.append({"role": "user", "content": prompt})
     try:
         response = llm.chat.completions.create(model='gpt-4o', messages=messages, stream=True, temperature=0.5)
         aimessage = ""
@@ -91,20 +81,6 @@ async def chat_async(message, history):
     except Exception as e:
         print(f"Error during chat interaction: {e}")
         yield "An error occurred during the chat interaction."
-# def chat(message, history):
-#     messages = gradio_history_to_azure_openai_messages(history)
-#     prompt = message
-#     if hasattr(message, "text"):
-#         prompt = message.text
-#     messages.append({"role": "user", "content": prompt})
-#     #messages.append({"role": "user", "content": message})
-#     try:
-#         response = llm.chat.completions.create(model='gpt-4o', messages=messages, temperature=0.2)
-#         result = response.choices[0].message.content;
-#         yield result
-#     except Exception as e:
-#         print(f"Error during chat interaction: {e}")
-#         yield "An error occurred during the chat interaction. {e}"   
 
 # Function to save chat history to a file
 def save_history():
@@ -165,13 +141,7 @@ head_style = """
 """
 
 # Gradio chatbot component
-chatbot = gr.Chatbot(value=grhistory, 
-                     height="100%", 
-                     min_width="100%", 
-                     render_markdown=True, 
-                     bubble_full_width=True,                      
-                     show_copy_button=True,
-                     elem_classes="chatbot-bubble")
+chatbot = gr.Chatbot(value=grhistory, height="100%", min_width="100%", render_markdown=True, bubble_full_width=True, show_copy_button=True, elem_classes="chatbot-bubble")
 
 # Gradio interface setup
 with gr.Blocks(head=head_style) as demo:
@@ -185,12 +155,12 @@ with gr.Blocks(head=head_style) as demo:
     save_button.click(fn=save_history)
     load_button.click(fn=load_history, outputs=chatbot)
 
-    gr.ChatInterface(        
-        fn=chat_async,
+    gr.ChatInterface(
+        fn=chat,
         chatbot=chatbot,
-        title="Development Bot",        
+        title="Development Bot",
         autofocus=True,
-        multimodal=False,
+        multimodal=True,
         fill_width=True,
         fill_height=True,
     )

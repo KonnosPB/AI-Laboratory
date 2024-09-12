@@ -1,8 +1,7 @@
 Ich benötige Unterstützung bei der Erstellung einer Azure DevOps Pipeline.
 
 ### Ziele sind:
-1. **Automatische File- und Assembly-Versionserhöhung**: Wenn ein Pull-Request gegen den master-Branch genehmigt wird, soll die Minor-Version erhöht werden. Beispiel: Vorher 1.0.0.0 => Nachher 1.1.0.0.
-2. **Interaktive Versionserhöhung**: Ein eigenständiges PowerShell-Skript soll die Version ebenfalls erhöhen und dem Anwender Vorschläge machen, wobei der Anwender auch die Major-Version anpassen kann.
+1. **Prüfung der Versionsnummer bei Pull-Request mit Ziel-Branch "master"**: Wenn ein Pull-Request gegen den master-Branch erstellt wird, soll geprüft werden, ob die Versionsnummer höher ist. Ist das nicht der Fall, soll ein PR-Kommentar angefügt werden und die Pipeline mit einem Fehler aussteigen. Der Anwender muss dann die Situation korrigieren und den Pull-Request erneut anstoßen.
 3. **Erstellung einer *.zip-Datei**: Alle erforderlichen Artefakte sollen für eine manuelle Installation durch die DevOps Pipeline in einer ZIP-Datei gebündelt werden. Beispiel: Kumavision.Web.Api.Image.Utils.<Version>.zip.
 4. **Erstellung einer Setup-Datei**: Eine Setup-Datei für eine assistentengeführte Installation soll durch die DevOps Pipeline erstellt werden. Beispiel: Kumavision.Web.Api.Image.Utils.Setup.<Version>.exe. Es wird Inno Setup als Tool zur Erstellung der Installation verwendet.
 
@@ -27,7 +26,8 @@ Ich benötige Unterstützung bei der Erstellung einer Azure DevOps Pipeline.
 |   |-- Kumavision.Web.Api.ImageUtils.Install.csproj
 |   |-- ...
 |-- /scripts
-|   |-- Update-Version.ps1
+|   |-- update-version.ps1
+|   |-- compare-version.ps1
 |-- Installer_Script.iss
 |-- azure-pipeline.yaml
 

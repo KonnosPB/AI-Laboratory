@@ -13,7 +13,6 @@ initial_files = [
     './Inno-DevOps-Projekt/Introduction.txt',
     'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.ImageUtils/Kumavision.ImageUtils.csproj',
     'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Install/Kumavision.Web.Api.ImageUtils.Install.csproj',
-    'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Install/Properties/PublishProfiles/FolderProfile.pubxml',    
     'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Service/Kumavision.Web.Api.ImageUtils.Service.csproj',
     'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/Kumavision.Web.Api.ImageUtils.Test/Kumavision.Web.Api.ImageUtils.Test.csproj',
     'C:/Repos/DevOps/HC-Work/Product_MED/Product_MED_DotNet_ImagePdfService/scripts/update-version.ps1',
@@ -91,20 +90,6 @@ async def chat_async(message, history):
     except Exception as e:
         print(f"Error during chat interaction: {e}")
         yield "An error occurred during the chat interaction."
-# def chat(message, history):
-#     messages = gradio_history_to_azure_openai_messages(history)
-#     prompt = message
-#     if hasattr(message, "text"):
-#         prompt = message.text
-#     messages.append({"role": "user", "content": prompt})
-#     #messages.append({"role": "user", "content": message})
-#     try:
-#         response = llm.chat.completions.create(model='gpt-4o', messages=messages, temperature=0.2)
-#         result = response.choices[0].message.content;
-#         yield result
-#     except Exception as e:
-#         print(f"Error during chat interaction: {e}")
-#         yield "An error occurred during the chat interaction. {e}"   
 
 # Function to save chat history to a file
 def save_history():

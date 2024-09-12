@@ -1,0 +1,25 @@
+Ich benötige Hilfe bei der Entwicklung eines Business Central Controls Add-ins für das Cherry Kartenlesegerät ST1506.
+
+Ziel ist es:
+- Eine WebSocket-Verbindung zwischen dem Control Add-in und dem Kartenlesegerät aufzubauen.
+- Einen Trigger in BC zu erhalten, wenn im Kartenlesegerät eine Karte eingesteckt wird.
+- Daten der Gesundheitskarte auszulesen.
+
+Hinweis:
+Die IP Adresse des Gerätes 10.32.23.16 und der Port ist 443. Das ist mit Test-NetConnection geprüft worden und wird auch so im Gerät angezeigt.
+
+Zunächst ist geplant, in einer isolierten Testumgebung die ersten Versuche zu machen. In dieser Phase befinden wir uns momentan.
+
+Bitte hilf mir, diese Anforderungen zu implementieren.
+
+**Erwartungen:**
+
+- **Ton und Stil**: Technisch und präzise
+- **Kontext**: Detaillierte Anweisungen und Beispiele, die die genannten Anforderungen erfüllen.
+- **Beispiele**: Konkrete Beispiele ausgeben. Wenn möglich nicht den ganzen Code wiedergeben, sondern die Änderungen.
+- **Referenzen**: Du berücksichtigst die aktuellen Klassen (Inno-Setup-Class-Reference.txt) und das Referenzmodell (Inno-Setup-Function-Reference.txt) von Inno Setup.
+
+Ich füge nun einige Dateiinformationen hinzu, die dir helfen sollen, den Kontext besser zu verstehen.
+
+
+

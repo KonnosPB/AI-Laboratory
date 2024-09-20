@@ -1,0 +1,9 @@
+azureopenai
+gradio
+llama-index
+llama-index-llms-azure-openai
+llama-index-vector-stores-chroma
+requests
+beautifulsoup4
+chromadb
+

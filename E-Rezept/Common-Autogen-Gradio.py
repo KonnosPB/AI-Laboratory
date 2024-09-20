@@ -11,12 +11,13 @@ from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, 
 from llama_index.llms.azure_openai import AzureOpenAI
 from llama_index.embeddings.azure_openai import AzureOpenAIEmbedding
 from llama_index.core.agent import ReActAgent
+from llama_index.vector_stores.chroma import ChromaVectorStore
 from git import Repo
 
 # Konfigurationsparameter
-directories = ["./pdfs/", "C:/Repos/Github/gematik/api-erp/"]
-hash_file = "./hashes.json"
-chroma_db_file = "./erezept.chromadb"
+directories = ["./E-Rezept/docs/", "C:/Repos/Github/gematik/api-erp/"]
+#hash_file = "./hashes.json"
+chroma_db_file = "./E-Rezept/erezept-chromadb.sqlite"
 
 # Azure OpenAI-Konfigurationen
 autogen_az_balanced_config = {
@@ -46,9 +47,9 @@ autogen_az_logical_config = {
     "temperature": 0.1
 }
 
-# create client and a new collection
-chroma_client = chromadb.PersistentClient(path=chroma_db_file)
-chroma_collection = chroma_client.get_or_create_collection("erezept")
+# # create client and a new collection
+# chroma_client = chromadb.PersistentClient(path=chroma_db_file)
+# chroma_collection = chroma_client.get_or_create_collection("erezept")
 
 autogen_az_creative_configlist = [autogen_az_creative_config]
 autogen_az_logical_configlist = [autogen_az_logical_config]
@@ -59,81 +60,41 @@ Settings.llm = AzureOpenAI(
     engine="gpt-4o",
     model="gpt-4o",
     temperature=0.0,
-    api_key=os.environ.get("OPENAPI_API_KEY", ""),
+    api_version="2024-04-01-preview",
+    api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
 )
 Settings.embed_model = AzureOpenAIEmbedding(  # LlamaIndex Azure Open AI Embedding
-    model='text-embedding-3-large',
+    deployment_name='text-embedding-3-small',
+    model='text-embedding-3-small',
     temperature=0.0,
-    api_key=os.environ.get("OPENAPI_API_KEY", ""),
+    #api_version="1",
+    api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
 )
-database_specialist = ReActAgent.from_tools(llm=Settings.llm, max_iterations=10, verbose=True)
-
-
-# Funktion zur Berechnung des Hashwertes einer Datei
-def calculate_file_hash(file_path):
-    hasher = hashlib.md5()
-    with open(file_path, 'rb') as f:
-        buf = f.read()
-        hasher.update(buf)
-    return hasher.hexdigest()
-
-
-# Lade Hashwerte aus Datei
-def load_hashes():
-    if os.path.exists(hash_file):
-        with open(hash_file, 'r') as f:
-            return json.load(f)
-    return {}
-
-
-# Speichere Hashwerte in Datei
-def save_hashes(hashes):
-    with open(hash_file, 'w') as f:
-        json.dump(hashes, f)
-
 
 # Lade Verzeichnisinhalte in LlamaIndex und aktualisiere den Index
-def load_directory(directories):
-    current_hashes = load_hashes()
-    new_hashes = {}
-    files_to_reindex = []
-
-    # Überprüfe und speichere neue/aktualisierte Dateien
+def load_directories(directories):   
+    documents = []
     for directory in directories:
-        for root, _, files in os.walk(directory):
-            for filename in files:
-                file_path = os.path.join(root, filename)
-                file_hash = calculate_file_hash(file_path)
-                new_hashes[filename] = file_hash
+        reader = SimpleDirectoryReader(input_dir=directory)
+        documents += reader.load_data()
+    index = VectorStoreIndex.from_documents(documents)
+    return index
 
-                # Wenn Datei neu oder geändert ist, zur Reindexierung hinzufügen
-                if current_hashes.get(filename) != file_hash:
-                    files_to_reindex.append(file_path)
-
-    # Erstelle den Index nur mit neuen/aktualisierten Dateien
-    if files_to_reindex:
-        reader = SimpleDirectoryReader(files_to_reindex)
-        documents = reader.load_data()
-        index = VectorStoreIndex.from_documents(documents)
-        save_hashes(new_hashes)
-    else:
-        index = VectorStoreIndex([])
-
+# Lade den Index aus der bestehenden Chroma-Datenbank
+def load_index_from_chroma(chroma_db_file):
+    vector_store = ChromaVectorStore(persist_directory=chroma_db_file, collection_name="erezept")
+    index = VectorStoreIndex(vector_store=vector_store)
     return index
 
 
-# Pull Git-Repository und aktualisiere den Index
-def update_git_repo(repo_path):
-    if os.path.exists(repo_path):
-        repo = Repo(repo_path)
-        repo.remotes.origin.pull()
-    else:
-        Repo.clone_from("https://github.com/gematik/api-erp", repo_path)
-
-
 # Initiales Laden der Verzeichnisse und Erstellen des Index
-update_git_repo("C:/Repos/Github/gematik/api-erp/")
-index = load_directory(directories)
+index = load_directories(directories)
+
+# Initiales Laden des Index aus der Chroma-Datenbank
+index = load_index_from_chroma(chroma_db_file)
+
+# Llama Index Modell
+database_specialist = ReActAgent.from_tools(llm=Settings.llm, max_iterations=10, verbose=True, index=index)
 
 # Definiere die Prompts und erstelle die Agenten
 agents = [

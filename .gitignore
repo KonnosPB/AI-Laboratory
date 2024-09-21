@@ -160,3 +160,5 @@ cython_debug/
 #.idea/
 
 Output/*
+
+E-Rezept/data-index-store/*

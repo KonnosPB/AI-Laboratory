@@ -1,22 +1,13 @@
 import os
-import hashlib
-import json
-from typing import Any, Dict, List, Optional, Tuple, Union
-import requests
-from autogen import ConversableAgent, GroupChat, GroupChatManager, UserProxyAgent, AssistantAgent
+from typing import Any, Dict, List
+from autogen import GroupChat, GroupChatManager, UserProxyAgent, AssistantAgent
 from autogen.agentchat.contrib.llamaindex_conversable_agent import LLamaIndexConversableAgent
-import gradio as gr
-import chromadb
-from llama_index.core import Settings, SimpleDirectoryReader, StorageContext, GPTVectorStoreIndex, VectorStoreIndex, load_index_from_storage
+from llama_index.core import Settings, SimpleDirectoryReader, StorageContext, VectorStoreIndex, load_index_from_storage
 from llama_index.llms.azure_openai import AzureOpenAI
 from llama_index.embeddings.azure_openai import AzureOpenAIEmbedding
 from llama_index.core.agent import ReActAgent
 from llama_index.core.tools import QueryEngineTool, ToolMetadata
-from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.core.storage.index_store import SimpleIndexStore
-from llama_index.core.vector_stores import SimpleVectorStore
-from autogen.code_utils import extract_code
 from pathlib import Path
 
 # Konfigurationsparameter

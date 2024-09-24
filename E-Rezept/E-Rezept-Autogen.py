@@ -11,9 +11,9 @@ from llama_index.core.storage.index_store import SimpleIndexStore
 from pathlib import Path
 
 # Konfigurationsparameter
-DIRECTORIES = ["./E-Rezept/docs/", "C:/Repos/Github/gematik/api-erp/"]
+DIRECTORIES = ["./E-Rezept/docs/", "C:/Repos/Github/KonnosPB/AI-Laboratory/E-Rezept/gematic-erp-api_docs/"]
 INDEX_PERSIST_DIR = Path("./E-Rezept/data-index-store")
-RELOAD_DIRECTORIES = False
+RELOAD_DIRECTORIES = True
 OPENAI_API_VERSION = "2024-04-01-preview"
 
 # Azure OpenAI-Konfigurationen
@@ -57,8 +57,8 @@ Settings.embed_model = AzureOpenAIEmbedding(
 def load_directories_into_store(directories: List[str]) -> VectorStoreIndex:
     documents = []
     for directory in directories:
-        reader = SimpleDirectoryReader(input_dir=directory)
-        documents += reader.load_data()
+        reader = SimpleDirectoryReader(input_dir=directory, recursive=True)
+        documents += reader.load_data(num_workers=3)
     vector_store = SimpleIndexStore()
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
     index = VectorStoreIndex.from_documents(documents, vector_store=vector_store, storageContext=storage_context, show_progress=True, embed_model=Settings.embed_model)
@@ -169,9 +169,13 @@ class CustomUserProxyAgent(UserProxyAgent):
             print(f"Sending message: {message.name}")  # Debugging-Information
             super().send(message.name, recipient, request_reply, silent)
         except Exception as e:
-            print(f"Error sending message: {e}")  # Detaillierte Fehlermeldung
-            print(f"Sending message: {message}")  # Debugging-Information
-            super().send(message, recipient, request_reply, silent)
+            try:                
+                print(f"Sending message: {message["content"]}")  # Debugging-Information
+                super().send(message["content"], recipient, request_reply, silent)
+            except Exception as e:
+                print(f"Error sending message: {e}")  # Detaillierte Fehlermeldung
+                print(f"Sending message: {message}")  # Debugging-Information
+                super().send(message, recipient, request_reply, silent)
 
 user_proxy = CustomUserProxyAgent(
     name="User_Proxy",

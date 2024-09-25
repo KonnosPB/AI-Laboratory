@@ -3,18 +3,21 @@ from typing import Any, Dict, List
 from autogen import GroupChat, GroupChatManager, UserProxyAgent, AssistantAgent
 from autogen.agentchat.contrib.llamaindex_conversable_agent import LLamaIndexConversableAgent
 from llama_index.core import Settings, SimpleDirectoryReader, StorageContext, VectorStoreIndex, load_index_from_storage
+from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.llms.azure_openai import AzureOpenAI
 from llama_index.embeddings.azure_openai import AzureOpenAIEmbedding
 from llama_index.core.agent import ReActAgent
 from llama_index.core.tools import QueryEngineTool, ToolMetadata
 from llama_index.core.storage.index_store import SimpleIndexStore
 from pathlib import Path
+import chromadb
 
 # Konfigurationsparameter
 DIRECTORIES = ["./E-Rezept/docs/", "./E-Rezept/gematic-erp-api_docs/"]
-INDEX_PERSIST_DIR = Path("./E-Rezept/data-index-store")
-RELOAD_DIRECTORIES = True
+INDEX_PERSIST_DB_FILE = ".\\E-Rezept\\data-index-store\\erezept-chroma.db"
+RELOAD_DIRECTORIES = False
 OPENAI_API_VERSION = "2024-04-01-preview"
+DB_COLLECTION = "erezept"
 
 # Azure OpenAI-Konfigurationen
 def create_config(model: str, temperature: float) -> Dict[str, Any]:
@@ -58,17 +61,23 @@ def load_directories_into_store(directories: List[str]) -> VectorStoreIndex:
     documents = []
     for directory in directories:
         reader = SimpleDirectoryReader(input_dir=directory, recursive=True)
-        documents += reader.load_data(num_workers=3)
-    vector_store = SimpleIndexStore()
-    storage_context = StorageContext.from_defaults(vector_store=vector_store)
-    index = VectorStoreIndex.from_documents(documents, vector_store=vector_store, storageContext=storage_context, show_progress=True, embed_model=Settings.embed_model)
-    index.storage_context.persist(persist_dir=INDEX_PERSIST_DIR)
+        documents += reader.load_data()        
+    # save to disk
+    db = chromadb.PersistentClient(path=INDEX_PERSIST_DB_FILE)
+    chroma_collection = db.get_or_create_collection(DB_COLLECTION)
+    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+    storage_context = StorageContext.from_defaults(vector_store=vector_store)        
+    index = VectorStoreIndex.from_documents(documents, storageContext=storage_context, show_progress=True, embed_model=Settings.embed_model)    
+    index.storage_context.persist()
     return index
 
 # Lade den Index aus der bestehenden Chroma-Datenbank
 def load_index_from_store() -> VectorStoreIndex:
-    storage_context = StorageContext.from_defaults(persist_dir=INDEX_PERSIST_DIR)
-    return load_index_from_storage(storage_context)
+    db2 = chromadb.PersistentClient(path=INDEX_PERSIST_DB_FILE)
+    chroma_collection = db2.get_or_create_collection(DB_COLLECTION)
+    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+    index = VectorStoreIndex.from_vector_store(vector_store, embed_model=Settings.embed_model)
+    return index
 
 index = load_directories_into_store(DIRECTORIES) if RELOAD_DIRECTORIES else load_index_from_store()
 

@@ -11,7 +11,7 @@ from llama_index.core.storage.index_store import SimpleIndexStore
 from pathlib import Path
 
 # Konfigurationsparameter
-DIRECTORIES = ["./E-Rezept/docs/", "C:/Repos/Github/KonnosPB/AI-Laboratory/E-Rezept/gematic-erp-api_docs/"]
+DIRECTORIES = ["./E-Rezept/docs/", "./E-Rezept/gematic-erp-api_docs/"]
 INDEX_PERSIST_DIR = Path("./E-Rezept/data-index-store")
 RELOAD_DIRECTORIES = True
 OPENAI_API_VERSION = "2024-04-01-preview"

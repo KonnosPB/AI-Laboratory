@@ -1,0 +1,8 @@
+azure-devops
+msrest
+jira
+GitPython
+langchain
+langgraph
+llamaindex
+python-dotenv

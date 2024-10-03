@@ -37,13 +37,20 @@ def load_file_into_history(file_path):
 def append_history(message):
     grhistory.append([message, "Ok."])
 
-systemPromptPath = "C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/SystemPrompt.txt"
-# Load initial files into history
-load_file_into_history('C:/Repos/Github/KonnosPB/AI-Laboratory/WiX-Project/Introduction.txt')
+systemPromptPath = "Work-AI-Functions-Support/SystemPrompt.txt"
 
-load_file_into_history('C:\Repos\Github\KonnosPB\AI-Laboratory\Work-AI-Functions\config\settings.py')
-load_file_into_history('C:\Repos\Github\KonnosPB\AI-Laboratory\Work-AI-Functions\modules\__init__.py')
-load_file_into_history('C:\Repos\Github\KonnosPB\AI-Laboratory\Work-AI-Functions\modules\__init__.py')
+# Load initial files into history
+load_file_into_history('Work-AI-Functions-Support/Introduction.txt')
+load_file_into_history('Work-AI-Functions/config/settings.py')
+load_file_into_history('Work-AI-Functions/tools/__init__.py')
+load_file_into_history('Work-AI-Functions/tools/azure_devops_tool.py')
+load_file_into_history('Work-AI-Functions/tools/functions.py')
+load_file_into_history('Work-AI-Functions/tools/git_tool.py')
+load_file_into_history('Work-AI-Functions/tools/jira_tool.py')
+load_file_into_history('Work-AI-Functions/tools/multi_git_repository_tool.py')
+load_file_into_history('Work-AI-Functions/tools/xliff_tool.py')
+load_file_into_history('Work-AI-Functions/main.py')
+load_file_into_history('Work-AI-Functions/requirements.txt')
 
 
 # Function to convert Gradio history to Azure OpenAI messages format
@@ -63,13 +70,25 @@ def gradio_history_to_azure_openai_messages(gradio_history):
 
 # Asynchronous chat function to interact with Azure OpenAI
 async def chat(message, history):
-    messages = gradio_history_to_azure_openai_messages(history)
-    prompt = message
+    messages = gradio_history_to_azure_openai_messages(history)    
     if hasattr(message, "text"):
         prompt = message.text
+    else:
+        try:
+            prompt = message["text"]
+        except KeyError:
+            prompt = message                   
     messages.append({"role": "user", "content": prompt})
     try:
-        response = llm.chat.completions.create(model='gpt-4o', messages=messages, stream=True, temperature=0.5)
+        response = llm.chat.completions.create(model='gpt-4o', 
+                                               messages=messages, 
+                                               stream=True, 
+                                               temperature=0.2, 
+                                               top_p=0.9, 
+                                               frequency_penalty=0.0, 
+                                               presence_penalty=0.0, 
+                                               #max_tokens=4096
+                                               )
         aimessage = ""
         for chunk in response:
             if len(chunk.choices) > 0:

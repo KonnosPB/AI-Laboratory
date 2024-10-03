@@ -1,0 +1,17 @@
+# Verwende das offizielle Asciidoctor Docker-Image als Basis
+FROM asciidoctor/docker-asciidoctor
+
+# Installiere Pandoc
+RUN apk --no-cache add pandoc
+
+# Installiere das asciidoctor-pandoc Plugin
+RUN gem install asciidoctor-pandoc
+
+# Setze das Arbeitsverzeichnis
+WORKDIR /workspace
+
+# Kopiere das Skript ins Docker-Image
+COPY convert_files.py /workspace/
+
+# Setze den Befehl, der beim Start des Containers ausgeführt wird
+CMD ["python3", "/workspace/convert_files.py"]

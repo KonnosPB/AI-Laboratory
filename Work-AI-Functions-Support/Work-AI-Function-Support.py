@@ -41,16 +41,17 @@ systemPromptPath = "Work-AI-Functions-Support/SystemPrompt.txt"
 
 # Load initial files into history
 load_file_into_history('Work-AI-Functions-Support/Introduction.txt')
-load_file_into_history('Work-AI-Functions/config/settings.py')
-load_file_into_history('Work-AI-Functions/tools/__init__.py')
-load_file_into_history('Work-AI-Functions/tools/azure_devops_tool.py')
-load_file_into_history('Work-AI-Functions/tools/functions.py')
-load_file_into_history('Work-AI-Functions/tools/git_tool.py')
-load_file_into_history('Work-AI-Functions/tools/jira_tool.py')
-load_file_into_history('Work-AI-Functions/tools/multi_git_repository_tool.py')
-load_file_into_history('Work-AI-Functions/tools/xliff_tool.py')
-load_file_into_history('Work-AI-Functions/main.py')
-load_file_into_history('Work-AI-Functions/requirements.txt')
+load_file_into_history('../AI-Work-Assistant/config/settings.py')
+load_file_into_history('../AI-Work-Assistant/tools/__init__.py')
+load_file_into_history('../AI-Work-Assistant/tools/azure_devops_tool.py')
+load_file_into_history('../AI-Work-Assistant/tools/functions.py')
+load_file_into_history('../AI-Work-Assistant/tools/git_tool.py')
+load_file_into_history('../AI-Work-Assistant/tools/jira_tool.py')
+load_file_into_history('../AI-Work-Assistant/tools/multi_git_repository_tool.py')
+load_file_into_history('../AI-Work-Assistant/tools/xliff_tool.py')
+load_file_into_history('../AI-Work-Assistant/utils/environment.py')
+load_file_into_history('../AI-Work-Assistant/main.py')
+load_file_into_history('../AI-Work-Assistant/requirements.txt')
 
 
 # Function to convert Gradio history to Azure OpenAI messages format

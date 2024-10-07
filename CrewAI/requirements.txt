@@ -1,0 +1,10 @@
+azure-devops
+msrest
+jira
+GitPython
+langchain
+langgraph
+llama-index
+python-dotenv
+crewai
+crewai-tools
